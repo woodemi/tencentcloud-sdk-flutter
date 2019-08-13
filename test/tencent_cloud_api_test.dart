@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tencent_cloud_api/HttpConnection.dart';
 
+import 'soe/soe_test.dart';
 import 'test_cloud_api.dart';
 import 'test_sign.dart';
 
@@ -17,4 +18,6 @@ void main() {
   });
 
   test('invoke cloud api', testCloudApi, skip: 'TODO: Read params from environment');
+
+  group('SOE', testSOE);
 }
