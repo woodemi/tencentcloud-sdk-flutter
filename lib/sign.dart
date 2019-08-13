@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
+import 'package:meta/meta.dart';
 
 import 'common.dart';
 
@@ -35,16 +36,20 @@ class Signer {
   }
 
   Map<String, Object> _buildSecretInfo() {
-    var nonce = Random().nextInt(1<<16);
-    var secondsSinceEpoch = DateTime.now().millisecondsSinceEpoch ~/ Duration.millisecondsPerSecond;
     return {
       if (signatureMethod != null) 'SignatureMethod': signatureMethod.name,
       'SecretId': credential.secretId,
       if (credential.token?.isNotEmpty == true) 'Token': credential.token,
-      'Timestamp': secondsSinceEpoch,
-      'Nonce': nonce,
+      'Timestamp': getTimestamp(),
+      'Nonce': getNonce(),
     };
   }
+
+  @visibleForTesting
+  int getNonce() => Random().nextInt(1<<16);
+
+  @visibleForTesting
+  int getTimestamp() => DateTime.now().millisecondsSinceEpoch ~/ Duration.millisecondsPerSecond;
 
   String _computeHmacSha1(String secretKey, String plaintext) {
     var digest = Hmac(sha1, utf8.encode(secretKey)).convert(utf8.encode(plaintext));
