@@ -7,7 +7,7 @@ import 'test_cloud_api.dart';
 import 'test_sign.dart';
 
 void main() {
-  test('sign a request', testSign);
+  group('test sign', testSign);
   
   test('post request with plaintext', () async {
     var nextInt = Random().nextInt(1<<16);
