@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tencent_cloud_api/common.dart';
 import 'package:tencent_cloud_api/soe/OralProcess.dart';
 import 'package:tencent_cloud_api/soe/SoeClient.dart';
 
-final _credential = Credential('', '');
+final _credential = Credential(Platform.environment['SOE_SECRET_ID'], Platform.environment['SOE_SECRET_KEY']);
 
-void testSOE() {
+void main() {
   var soeClient = SoeClient(_credential);
 
   test('initOralProcess', () async {
