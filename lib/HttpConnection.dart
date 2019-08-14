@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -19,5 +21,12 @@ class HttpConnection {
   Future<Response<T>> post<T>(
     String path, {
     String data,
-  }) => dio.post(path, data: data);
+    Map<String, Object> headers,
+  }) {
+    var contentTypeValue = headers != null ? headers[HttpHeaders.contentTypeHeader] : null;
+    return dio.post(path, data: data, options: Options(
+      headers: headers,
+      contentType: contentTypeValue != null ? ContentType.parse(contentTypeValue) : null,
+    ));
+  }
 }
