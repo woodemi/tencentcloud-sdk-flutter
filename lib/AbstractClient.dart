@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:meta/meta.dart';
 
 import 'HttpConnection.dart';
@@ -24,11 +27,14 @@ class AbstractClient {
     @required this.apiVersion,
     @required Credential credential,
     SignatureMethod signatureMethod,
-  }): this.signer = Signer(credential, signatureMethod);
+  }): this.signer = Signer(credential, signatureMethod),
+      this.signerV3 = SignerV3(credential, endpoint.split('.')[0]);
 
   // ---------------- Helper ----------------
 
   final Signer signer;
+
+  final SignerV3 signerV3;
 
   final httpConnection = HttpConnection();
 
@@ -55,6 +61,28 @@ class AbstractClient {
 
     // TODO Handle exception
     var response = await httpConnection.post('https://$endpoint$path', data: encodedQueryString);
+    return response.data;
+  }
+
+  /// Debug with [SignerV3.unsignedPayload]
+  Future<dynamic> postRequestV3(String action, Map<String, Object> actionParams) async {
+    var payload = json.encode(actionParams);
+
+    var uriPrefix = ['POST', path, ''/*CanonicalQueryString*/,].join('\n');
+    var plainHeaders = {
+      HttpHeaders.hostHeader: endpoint,
+      HttpHeaders.contentTypeHeader: ContentType.json.value,
+    };
+    var signedHeaders = signerV3.sign(uriPrefix, plainHeaders, payload);
+
+    var headers = {
+      'X-TC-Version': apiVersion,
+      'X-TC-Action': action,
+      ...signedHeaders,
+    };
+
+    // TODO Handle exception
+    var response = await httpConnection.post('https://$endpoint$path', data: payload, headers: headers);
     return response.data;
   }
 }

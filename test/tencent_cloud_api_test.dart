@@ -9,5 +9,5 @@ void main() {
   
   group('test http connection', testHttpConnection);
 
-  test('invoke cloud api', testCloudApi, skip: 'TODO: Read params from environment');
+  group('invoke cloud api', testCloudApi, skip: 'TODO: Read params from environment');
 }
