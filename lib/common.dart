@@ -11,6 +11,7 @@ class Credential {
 class SignatureMethod {
   static final HmacSHA1 = SignatureMethod._('HmacSHA1');
   static final HmacSHA256 = SignatureMethod._('HmacSHA256');
+  static final Tc3HmacSHA256 = SignatureMethod._('TC3-HMAC-SHA256');
 
   final String name;
 
